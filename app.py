@@ -6,7 +6,7 @@ from functions import csv_to_dict, make_collections, drop_collections, confirm_c
 from datetime import datetime, timedelta, date, time
 import pandas as pd
 
-client = MongoClient(localhost)
+client = MongoClient("localhost")
 db = client[name]
 
 ## for testing
@@ -85,10 +85,11 @@ id_appt = {"appointment_id": ObjectId("5f28a6748fc060ff5939ffd5")}
 id_location = {"location_id": ObjectId("5f28a6748fc060ff5939fe59")}
 answer = 'Yes'
 
+id_appt.update(id_location)
+
 if answer == 'Yes':
     db.users.update_one(id_person, 
-    {"$pull": {"appointments": {"appointment_id": ObjectId("5f28a6748fc060ff5939ffd5"), 
-                        "location_id": ObjectId("5f28a6748fc060ff5939fe59")}}})
+    {"$pull": {"appointments": id_appt }})
     print("Your appointment has been cancelled.")
 
 ## show that appt has been removed from subdocument array
