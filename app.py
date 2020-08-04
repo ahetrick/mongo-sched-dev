@@ -13,7 +13,7 @@ db = client[name]
 # if db.list_collection_names():
 #     db = drop_collections(db)
 
-# confirm collections exist
+## confirm collections exist
 if set(db.list_collection_names()) != set(['users', 'locations', 'shifts']):
     #prep data
     list_of_dicts = csv_to_dict()
@@ -33,17 +33,17 @@ show_current_dates(db)
 # for i in db.users.find({}):
 #     print(i)
 
-# #show all shifts
+## show all shifts
 # for i in db.shifts.find({}):
 #     print(i)
 
-# #show all locations
+## show all locations
 # for i in db.locations.find({}):
 #     print(i)
 
 
-# #claim appointment; receive these values from session; hard-coded for demo
-# #assumes valid ObjectIds passed
+## claim appointment; receive these values from session; hard-coded for demo
+## assumes valid ObjectIds passed
 id_person = {"_id": ObjectId("5f28a6748fc060ff5939fe55")}
 id_appt = {"_id": ObjectId("5f28a6748fc060ff5939ffd6")} 
 id_location = {"_id": ObjectId("5f28a6748fc060ff5939fe59")}
@@ -70,16 +70,16 @@ else:
         user_appt = [user_appt]
         db.users.update_one(id_person, {"$set": {"appointments":user_appt}})
 
-##show inserted data
+## show inserted data
 print(db.users.find_one(id_person))
 
-# #find appts and location combinations that haven't been claimed 60 times
+## find appts and location combinations that haven't been claimed 60 times
 available = find_open_appts_locations(db)
 
-# #find appts and location combinations that have been claimed 60 times
+## find appts and location combinations that have been claimed 60 times
 closed = find_max_appts_locations(db)
 
-##cancel an appointment; receive these values from session; hard-coded for demo
+## cancel an appointment; receive these values from session; hard-coded for demo
 id_person = {"_id": ObjectId("5f28a6748fc060ff5939fe55")}
 id_appt = {"appointment_id": ObjectId("5f28a6748fc060ff5939ffd6")} 
 id_location = {"location_id": ObjectId("5f28a6748fc060ff5939fe59")}
@@ -89,5 +89,5 @@ if answer == 'Yes':
     db.users.update_one(id_person, {"$pull": {"appointments": id_appt}})
     print("Your appointment has been cancelled.")
 
-#show cancelled data
+## show that appt has been cancelled
 print(db.users.find_one(id_person))
