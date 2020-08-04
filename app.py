@@ -6,7 +6,7 @@ from functions import csv_to_dict, make_collections, drop_collections, confirm_c
 from datetime import datetime, timedelta, date, time
 import pandas as pd
 
-client = MongoClient(host)
+client = MongoClient(localhost)
 db = client[name]
 
 ## for testing
@@ -45,7 +45,7 @@ show_current_dates(db)
 ## claim appointment; receive these values from session; hard-coded for demo
 ## assumes valid ObjectIds passed
 id_person = {"_id": ObjectId("5f28a6748fc060ff5939fe55")}
-id_appt = {"_id": ObjectId("5f28a6748fc060ff5939ffd6")} 
+id_appt = {"_id": ObjectId("5f28a6748fc060ff5939ffd5")} 
 id_location = {"_id": ObjectId("5f28a6748fc060ff5939fe59")}
 
 count_appt_week = check_user_appt(db, id_person, id_appt, id_location)
@@ -81,12 +81,14 @@ closed = find_max_appts_locations(db)
 
 ## cancel an appointment; receive these values from session; hard-coded for demo
 id_person = {"_id": ObjectId("5f28a6748fc060ff5939fe55")}
-id_appt = {"appointment_id": ObjectId("5f28a6748fc060ff5939ffd6")} 
+id_appt = {"appointment_id": ObjectId("5f28a6748fc060ff5939ffd5")} 
 id_location = {"location_id": ObjectId("5f28a6748fc060ff5939fe59")}
 answer = 'Yes'
 
 if answer == 'Yes':
-    db.users.update_one(id_person, {"$pull": {"appointments": id_appt}})
+    db.users.update_one(id_person, 
+    {"$pull": {"appointments": {"appointment_id": ObjectId("5f28a6748fc060ff5939ffd5"), 
+                        "location_id": ObjectId("5f28a6748fc060ff5939fe59")}}})
     print("Your appointment has been cancelled.")
 
 ## show that appt has been cancelled
