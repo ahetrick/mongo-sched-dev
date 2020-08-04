@@ -6,8 +6,8 @@ from functions import csv_to_dict, make_collections, drop_collections, confirm_c
 from datetime import datetime, timedelta, date, time
 import pandas as pd
 
-client = MongoClient("localhost", 27017)
-db = client["scheduler_db"]
+client = MongoClient("localhost")
+db = client[name]
 
 ## for testing
 # if db.list_collection_names():
@@ -85,7 +85,7 @@ id_appt = {"appointment_id": ObjectId("5f28a6748fc060ff5939ffd5")}
 id_location = {"location_id": ObjectId("5f28a6748fc060ff5939fe59")}
 answer = 'Yes'
 
-#create one diction with id_appt and id_location as keys
+#create one dictionary with id_appt and id_location as keys
 id_appt.update(id_location)
 
 if answer == 'Yes':
