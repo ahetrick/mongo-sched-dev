@@ -91,5 +91,5 @@ if answer == 'Yes':
                         "location_id": ObjectId("5f28a6748fc060ff5939fe59")}}})
     print("Your appointment has been cancelled.")
 
-## show that appt has been cancelled
+## show that appt has been removed from subdocument array
 print(db.users.find_one(id_person))
