@@ -97,7 +97,7 @@ def check_user_appt(mdb, person_id, shift_id, location_id):
                                             {"appointments.location_id":location["_id"]}] } )
     if user_appt_duplicate:
         return("Duplicate")
-    #check all users for max capacity for each datetime/location combination
+    #check all users' appts to get max capacity for each datetime/location combination
     users_with_appt = mdb.users.find( {"$and": [{"appointments.appointment_id":appt["_id"]}, 
                                                 {"appointments.location_id":location["_id"]}] } )
     count_users_with_appt = len([user for user in users_with_appt])
@@ -120,7 +120,7 @@ def make_user_appt(mdb, shift_id, location_id):
     full_shift.update(full_location)
     return full_shift
 
-#create a .csv of all datetime(appt)/location combos that have reach maximum capacity
+#create a .csv of all datetime(appt)/location combos that have reached maximum capacity
 def find_max_appts_locations(mdb):
     result = mdb.users.aggregate([
         {"$group" : {
