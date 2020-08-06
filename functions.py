@@ -97,6 +97,7 @@ def check_user_appt(mdb, person_id, shift_id, location_id):
                                             {"appointments.location_id":location["_id"]}] } )
     if user_appt_duplicate:
         return("Duplicate")
+    #check all users for max capacity for each datetime/location combination
     users_with_appt = mdb.users.find( {"$and": [{"appointments.appointment_id":appt["_id"]}, 
                                                 {"appointments.location_id":location["_id"]}] } )
     count_users_with_appt = len([user for user in users_with_appt])
@@ -119,6 +120,7 @@ def make_user_appt(mdb, shift_id, location_id):
     full_shift.update(full_location)
     return full_shift
 
+#create a .csv of all datetime(appt)/location combos that have reach maximum capacity
 def find_max_appts_locations(mdb):
     result = mdb.users.aggregate([
         {"$group" : {
@@ -126,7 +128,7 @@ def find_max_appts_locations(mdb):
                 "appt": "$appointments.appointment_id",
                 "location": "$appointments.location_id",
                 "datetime": "$appointments.datetime",
-                "location": "$appointments.name"
+                "sitename": "$appointments.name"
                 },
             "count": {"$sum":1}
              }
@@ -142,12 +144,13 @@ def find_max_appts_locations(mdb):
     for i in result: 
         if i['_id']:
             n['datetime'] = i['_id']['datetime'][0]
-            n['location'] = i['_id']['location'][0]
+            n['location'] = i['_id']['sitename'][0]
             list_of_dicts.append(n)
     df = pd.DataFrame(list_of_dicts)
     df.to_csv('closed_appts.csv',index=False)
     return result
 
+#create a .csv of all datetime(appt)/location combos that have not reached maximum capacity 
 def find_open_appts_locations(mdb):
     result = mdb.users.aggregate([
         {"$group" : {
@@ -155,7 +158,7 @@ def find_open_appts_locations(mdb):
                 "appt": "$appointments.appointment_id",
                 "location": "$appointments.location_id",
                 "datetime": "$appointments.datetime",
-                "location": "$appointments.name"
+                "sitename": "$appointments.name"
                 },
             "count": {"$sum":1}
              }
@@ -171,7 +174,7 @@ def find_open_appts_locations(mdb):
     for i in result: 
         if i['_id']:
             n['datetime'] = i['_id']['datetime'][0]
-            n['location'] = i['_id']['location'][0]
+            n['sitename'] = i['_id']['sitename'][0]
             list_of_dicts.append(n)
     df = pd.DataFrame(list_of_dicts)
     df.to_csv('open_appts.csv',index=False)
