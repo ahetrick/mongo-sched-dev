@@ -9,7 +9,7 @@ import pandas as pd
 client = MongoClient("localhost",27017)
 db = client["scheduler_db"]
 
-## for testing
+# for testing
 # if db.list_collection_names():
 #     db = drop_collections(db)
 
@@ -30,9 +30,9 @@ show_current_dates(db)
 
 ## claim appointment; receive these values from session; hard-coded for demo
 ## assumes valid ObjectIds passed
-id_person = {"_id": ObjectId("5f28a6748fc060ff5939fe55")}
-id_appt = {"_id": ObjectId("5f28a6748fc060ff5939ffd5")} 
-id_location = {"_id": ObjectId("5f28a6748fc060ff5939fe59")}
+id_person = {"_id": ObjectId("5f2c6bc6821a03d250b15f1d")}
+id_appt = {"_id": ObjectId("5f2c6bc6821a03d250b16021")} 
+id_location = {"_id": ObjectId("5f2c6bc6821a03d250b15f20")}
 
 count_appt_week = check_user_appt(db, id_person, id_appt, id_location)
 
@@ -49,7 +49,7 @@ elif count_appt_week == "Max capacity week":
     print("You have reached your maximum number of appointments for that week. Please choose another week.")
 else:
     user_appt = make_user_appt(db, id_appt, id_location)
-    #add appt to user document
+    #add appt to user document in user collection
     if 'appointments' in db.users.find_one(id_person).keys():
         db.users.update_one(id_person, {"$push": {"appointments":user_appt}})
     else:
@@ -66,17 +66,16 @@ available = find_open_appts_locations(db)
 closed = find_max_appts_locations(db)
 
 ## cancel an appointment; receive these values from session; hard-coded for demo
-id_person = {"_id": ObjectId("5f28a6748fc060ff5939fe55")}
-id_appt = {"appointment_id": ObjectId("5f28a6748fc060ff5939ffd5")} 
-id_location = {"location_id": ObjectId("5f28a6748fc060ff5939fe59")}
+id_person = {"_id": ObjectId("5f2c6bc6821a03d250b15f1d")}
+id_appt = {"appointment_id": ObjectId("5f2c6bc6821a03d250b16021")} 
+id_location = {"location_id": ObjectId("5f2c6bc6821a03d250b15f20")}
 answer = 'Yes'
 
 ## create one dictionary with id_appt and id_location as keys
 id_appt.update(id_location)
 
 if answer == 'Yes':
-    db.users.update_one(id_person, 
-    {"$pull": {"appointments": id_appt }})
+    db.users.update_one(id_person, {"$pull": {"appointments": id_appt }})
     print("Your appointment has been cancelled.")
 
 ## show that appt has been removed from subdocument array
